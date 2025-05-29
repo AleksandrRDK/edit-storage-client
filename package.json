@@ -2,7 +2,7 @@
     "name": "client",
     "private": true,
     "version": "0.0.0",
-    "homepage": "https://sashka19.github.io/edit_storage",
+    "homepage": "https://AleksandrRDK.github.io/edit-storage-client",
     "type": "module",
     "scripts": {
         "dev": "vite",
