@@ -1,0 +1,76 @@
+.filters
+  margin-bottom: 2rem
+  max-width: 600px
+  width: 90%
+  margin-left: auto
+  margin-right: auto
+  color: var(--text)
+
+  h4
+    margin-bottom: 1rem
+    font-weight: 600
+    font-size: 1.2rem
+    color: var(--accent-plain)
+
+  .tags-list
+    display: flex
+    flex-wrap: wrap
+    gap: 0.6rem
+
+    .tag-btn
+      background-color: var(--card-bg)
+      border: 2px solid rgba(161, 140, 209, 0.7)
+      border-radius: 14px
+      padding: 0.4rem 1rem
+      font-size: 0.9rem
+      color: var(--text-secondary)
+      cursor: pointer
+      transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease
+      user-select: none
+
+      &:hover
+        border-color: var(--accent-secondary)
+        color: var(--accent-secondary)
+
+      &.active
+        background-color: var(--accent-secondary)
+        border-color: var(--accent-secondary)
+        color: var(--bg)
+  .filter-icon-btn
+    background: none
+    border: none
+    color: var(--accent-secondary)
+    font-size: 1.3rem
+    cursor: pointer
+    padding: 0.2rem 0.5rem
+
+  .filter-modal
+    position: fixed
+    top: 0
+    left: 0
+    width: 100vw
+    height: 100vh
+    background: rgba(0, 0, 0, 0.6)
+    display: flex
+    align-items: center
+    justify-content: center
+    z-index: 999
+
+  .filter-modal-content
+    position: relative
+    background: var(--card-bg)
+    color: var(--text)
+    padding: 1.5rem
+    border-radius: 12px
+    max-width: 500px
+    width: 90%
+
+  .close-btn
+    background: none
+    border: none
+    color: var(--text-secondary)
+    font-size: 1.5rem
+    position: absolute
+    top: 1rem
+    right: 1rem
+    cursor: pointer

@@ -1,0 +1,56 @@
+.login-form
+  display: flex
+  justify-content: center
+  align-items: center
+  height: 100vh
+  background-color: var(--bg)
+  width: 100%
+
+  &-wrapper
+    background-color: var(--card-bg)
+    padding: 20px
+    border-radius: 10px
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3)
+    width: 100%
+    max-width: 400px
+    margin: 0 auto
+
+    .toggle
+      display: flex
+      justify-content: center
+      margin-bottom: 20px
+
+      button
+        flex: 1
+        padding: 10px
+        background: none
+        border: none
+        color: var(--text-secondary)
+        cursor: pointer
+        font-weight: bold
+        transition: color 0.3s, border-bottom 0.3s
+
+        &.active
+          color: var(--text)
+          border-bottom: 2px solid var(--accent-plain)
+
+    form
+      display: flex
+      flex-direction: column
+      gap: 10px
+
+      input
+        padding: 10px
+        border: none
+        border-radius: 6px
+        background-color: #2a2a2a
+        color: var(--text)
+
+      button
+        padding: 10px
+        background: var(--accent-gradient)
+        border: none
+        border-radius: 6px
+        color: white
+        font-weight: bold
+        cursor: pointer

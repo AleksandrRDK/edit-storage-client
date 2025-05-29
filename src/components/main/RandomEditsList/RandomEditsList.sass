@@ -1,0 +1,44 @@
+.random-edits-list
+  margin-top: 2rem
+  padding: 1rem
+  background-color: var(--card-bg)
+  border-radius: 12px
+  color: var(--text-secondary)
+
+  h3
+    color: var(--accent-plain)
+    margin-bottom: 1rem
+    text-align: center
+
+  .no-edits
+    color: var(--text-secondary)
+    font-style: italic
+    text-align: center
+    margin-top: 20px
+
+  .cards-container
+    display: flex
+    gap: 1rem
+    flex-wrap: wrap
+    justify-content: center
+
+  .edit-card
+    width: 160px
+    height: 220px
+    border-radius: 10px
+    overflow: hidden
+    background-color: rgba(255, 255, 255, 0.05)
+    color: var(--text)
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3)
+    cursor: pointer
+    display: flex
+    align-items: flex-end
+    padding: 0.5rem
+    transition: transform 0.3s ease, box-shadow 0.3s ease
+    background-position: center center;
+
+    &:hover
+      transform: translateY(-6px)
+      box-shadow: 0 8px 16px var(--accent-secondary)
+
+

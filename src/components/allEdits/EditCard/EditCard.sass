@@ -1,0 +1,52 @@
+.all-edit-card
+  display: flex
+  flex-direction: column
+  width: 160px
+  height: 260px
+  border-radius: 12px
+  overflow: hidden
+  background-color: var(--card-bg)
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4)
+  color: var(--text)
+  text-decoration: none
+  cursor: pointer
+  transition: transform 0.3s ease, box-shadow 0.3s ease
+
+  &:hover
+    transform: translateY(-6px)
+    box-shadow: 0 8px 20px var(--accent-secondary)
+
+  img
+    width: 100%
+    height: 140px
+    object-fit: cover
+    flex-shrink: 0
+
+  .card-info
+    padding: 0.8rem 1rem
+    flex-grow: 1
+    display: flex
+    flex-direction: column
+    justify-content: space-between
+
+    .edit-title
+      margin: 0
+      font-size: 1rem
+      font-weight: 600
+      color: var(--accent-plain)
+      white-space: nowrap
+      overflow: hidden
+      text-overflow: ellipsis
+
+    .edit-meta
+      margin-top: 0.5rem
+      font-size: 0.8rem
+      color: var(--text-secondary)
+      display: flex
+      justify-content: space-between
+
+      .edit-author,
+      .edit-date
+        white-space: nowrap
+        overflow: hidden
+        text-overflow: ellipsis

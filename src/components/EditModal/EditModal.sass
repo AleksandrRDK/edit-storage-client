@@ -1,0 +1,90 @@
+.edit-modal-backdrop
+  position: fixed
+  top: 0
+  left: 0
+  width: 100vw
+  height: 100vh
+  background: rgba(0, 0, 0, 0.75)
+  display: flex
+  justify-content: center
+  align-items: center
+  z-index: 1000
+
+  .edit-modal
+    background: var(--card-bg)
+    padding: 2rem
+    border-radius: 16px
+    width: 320px
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.7)
+    position: relative
+    color: var(--text)
+
+    .close-btn
+      position: absolute
+      top: 12px
+      right: 12px
+      background: transparent
+      border: none
+      font-size: 1.5rem
+      color: var(--text)
+      cursor: pointer
+
+    .edit-title
+      margin-bottom: 0.5rem
+
+    .edit-video-wrapper
+      margin: 15px 0
+      iframe
+        border-radius: 8px
+        background: var(--card-bg)
+
+    .edit-author,
+    .edit-date
+      color: var(--text-secondary)
+      margin-bottom: 1rem
+
+    .edit-tags
+      margin-bottom: 1rem
+      display: flex
+      gap: 10px
+      flex-wrap: wrap
+
+      .tag
+        background: var(--accent-secondary)
+        color: #000
+        padding: 0.2rem 0.6rem
+        border-radius: 8px
+        font-size: 0.85rem
+
+    .favorite-btn
+      background: var(--accent-plain)
+      border: none
+      padding: 0.6rem 1rem
+      border-radius: 12px
+      cursor: pointer
+      color: white
+      font-weight: 600
+      width: 100%
+      transition: background-color 0.3s ease
+
+    .favorite-btn.favorited
+      background: var(--accent-secondary)
+      color: black
+
+    .favorite-btn.disabled
+      background-color: #ccc
+      cursor: not-allowed
+      pointer-events: none
+
+    .details-btn
+      display: inline-block
+      margin-top: 15px
+      padding: 8px 16px
+      background: var(--accent-gradient)
+      color: var(--text)
+      border-radius: 6px
+      text-decoration: none
+      font-weight: 600
+      transition: background 0.3s ease
+      &:hover
+        background: var(--accent-secondary)

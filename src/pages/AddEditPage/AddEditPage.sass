@@ -1,0 +1,86 @@
+.add-edit-page-wrapper
+  display: flex
+  min-height: 100vh
+  background-color: var(--bg)
+  color: var(--text)
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+
+  .add-edit-form-shield
+    margin-left: 300px
+    display: flex
+    justify-content: center
+    align-items: center
+    width: 100%
+
+  .add-edit-form
+    min-width: 500px
+    max-width: 600px
+    padding: 2rem 3rem
+    background-color: var(--card-bg)
+    border-radius: 12px
+    box-shadow: 0 8px 24px rgba(161, 140, 209, 0.2)
+    display: flex
+    flex-direction: column
+
+    .back-button
+      background: none
+      border: none
+      color: var(--accent-plain)
+      font-size: 1rem
+      margin-bottom: 1rem
+      cursor: pointer
+      transition: color 0.2s ease
+      &:hover
+        color: var(--accent-secondary)
+
+
+    h2
+      font-weight: 700
+      font-size: 2rem
+      margin-bottom: 1.5rem
+      background: var(--accent-gradient)
+      -webkit-background-clip: text
+      -webkit-text-fill-color: transparent
+
+    form
+      display: flex
+      flex-direction: column
+      gap: 1.25rem
+
+      input
+        background-color: #2a2a2a
+        border: 1.5px solid transparent
+        border-radius: 8px
+        padding: 0.75rem 1rem
+        font-size: 1rem
+        color: var(--text)
+        transition: border-color 0.3s ease, box-shadow 0.3s ease
+
+        &::placeholder
+          color: var(--text-secondary)
+
+        &:focus
+          outline: none
+          border-color: var(--accent-plain)
+          box-shadow: 0 0 8px var(--accent-secondary)
+
+      button
+        background: var(--accent-gradient)
+        border: none
+        border-radius: 10px
+        padding: 0.9rem
+        font-weight: 700
+        font-size: 1.1rem
+        color: var(--text)
+        cursor: pointer
+        transition: background-position 0.4s ease
+        background-size: 200% 100%
+        background-position: left
+
+        &:hover
+          background-position: right
+          box-shadow: 0 0 12px var(--accent-secondary)
+
+        &:active
+          transform: scale(0.98)
+          box-shadow: none
