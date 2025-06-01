@@ -1,12 +1,15 @@
 import { useState, useMemo } from 'react';
 import EditModal from '../../EditModal/EditModal';
 import { addFavorite, removeFavorite } from '../../../api/favoritesApi';
+import { getCloudinaryThumbnailUrl } from '../../../utils/cloudinaryUtils';
+import { getYouTubeThumbnailUrl } from '../../../utils/youtubeUtils';
 import './FavoritesSection.sass';
 
 export default function FavoritesSection({ favorites, currentUser }) {
     const [sortBy, setSortBy] = useState('date');
     const [selectedEdit, setSelectedEdit] = useState(null);
 
+    // Топ-3 тега по частоте встречаемости
     const topTags = useMemo(() => {
         const tagCounts = favorites
             .flatMap((edit) => edit.tags)
@@ -21,6 +24,7 @@ export default function FavoritesSection({ favorites, currentUser }) {
             .map(([tag]) => tag);
     }, [favorites]);
 
+    // Сортировка
     const sortedFavorites = useMemo(() => {
         const arr = [...favorites];
         if (sortBy === 'date') {
@@ -37,9 +41,13 @@ export default function FavoritesSection({ favorites, currentUser }) {
         return arr;
     }, [favorites, sortBy]);
 
-    const getThumbnailUrl = (videoId) =>
-        `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+    // Функция для получения url превьюшки с учётом источника видео
+    const getThumbnailUrl = (edit) =>
+        edit.source === 'cloudinary'
+            ? getCloudinaryThumbnailUrl(edit.video)
+            : getYouTubeThumbnailUrl(edit.video);
 
+    // Форматирование даты
     const formatDate = (isoDate) => {
         return new Date(isoDate).toLocaleDateString('ru-RU', {
             year: 'numeric',
@@ -59,6 +67,7 @@ export default function FavoritesSection({ favorites, currentUser }) {
                 await removeFavorite(editId, token);
             }
 
+            // Обновляем только выбранный эдит в модальном окне, если он открыт
             setSelectedEdit((prev) =>
                 prev && prev._id === editId
                     ? {
@@ -98,7 +107,7 @@ export default function FavoritesSection({ favorites, currentUser }) {
                     Топ теги:
                     <div className="tags-list">
                         {topTags.map((tag) => (
-                            <span key={tag}>{tag}</span>
+                            <span key={tag}>#{tag}</span>
                         ))}
                     </div>
                 </div>
@@ -110,14 +119,15 @@ export default function FavoritesSection({ favorites, currentUser }) {
                         key={edit._id}
                         className="edit-card"
                         onClick={() => setSelectedEdit(edit)}
+                        title={edit.title}
                     >
                         <img
-                            src={getThumbnailUrl(edit.video)}
-                            alt={edit.title}
+                            src={getThumbnailUrl(edit)}
+                            alt={`Превью ${edit.title}`}
                         />
                         <div className="info">
                             <h4>{edit.title}</h4>
-                            <p>{edit.author}</p>
+                            <p>{edit.author || 'аноним'}</p>
                             <span>{formatDate(edit.createdAt)}</span>
                         </div>
                     </div>

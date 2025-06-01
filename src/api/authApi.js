@@ -1,4 +1,7 @@
-const API_URL = 'http://localhost:5000/api/auth';
+//для разработки
+// const API_URL = 'http://localhost:5000/api/auth';
+const API_URL =
+    'https://edit-storage-server-production.up.railway.app/api/auth';
 
 export async function registerUser(data) {
     const res = await fetch(`${API_URL}/register`, {

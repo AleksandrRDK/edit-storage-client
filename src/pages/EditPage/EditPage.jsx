@@ -8,6 +8,8 @@ import {
     checkIsFavorite,
 } from '../../api/favoritesApi';
 import Loading from '../../components/Loading/Loading';
+import { getYouTubeEmbedUrl } from '../../utils/youtubeUtils';
+import { getCloudinaryVideoUrl } from '../../utils/cloudinaryUtils';
 import './EditPage.sass';
 
 export default function EditPage() {
@@ -22,16 +24,14 @@ export default function EditPage() {
     const token = localStorage.getItem('token');
 
     // Форматируем дату в удобный вид
-    const formatDate = (dateStr) => {
-        const d = new Date(dateStr);
-        return d.toLocaleDateString('ru-RU', {
+    const formatDate = (dateStr) =>
+        new Date(dateStr).toLocaleDateString('ru-RU', {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
             hour: '2-digit',
             minute: '2-digit',
         });
-    };
 
     useEffect(() => {
         setLoading(true);
@@ -95,15 +95,32 @@ export default function EditPage() {
                         <article className="edit-card">
                             <h1 className="edit-title">{edit.title}</h1>
                             <p className="edit-author">
-                                Автор: <b>{edit.author}</b>
+                                Автор: <b>{edit.author || 'аноним'}</b>
                             </p>
 
                             <div className="video-wrapper">
-                                <iframe
-                                    src={`https://www.youtube.com/embed/${edit.video}`}
-                                    allowFullScreen
-                                    title={`Видео к эдиту: ${edit.title}`}
-                                />
+                                {edit.source === 'cloudinary' ? (
+                                    <video
+                                        controls
+                                        poster={getCloudinaryVideoUrl(
+                                            edit.video
+                                        )}
+                                    >
+                                        <source
+                                            src={getCloudinaryVideoUrl(
+                                                edit.video
+                                            )}
+                                            type="video/mp4"
+                                        />
+                                        Ваш браузер не поддерживает видео.
+                                    </video>
+                                ) : (
+                                    <iframe
+                                        src={getYouTubeEmbedUrl(edit.video)}
+                                        allowFullScreen
+                                        title={`Видео к эдиту: ${edit.title}`}
+                                    />
+                                )}
                             </div>
 
                             <p className="edit-tags">
@@ -116,6 +133,21 @@ export default function EditPage() {
                                       ))
                                     : '— нет тегов —'}
                             </p>
+                            <div className="edit-rating">
+                                <span className="rating-number">
+                                    {edit.rating} / 11
+                                </span>
+                                <div className="rating-bar-wrapper">
+                                    <div
+                                        className="rating-bar"
+                                        style={{
+                                            width: `${
+                                                (edit.rating / 11) * 100
+                                            }%`,
+                                        }}
+                                    />
+                                </div>
+                            </div>
                             <button
                                 className="fav-button"
                                 onClick={toggleFavorite}

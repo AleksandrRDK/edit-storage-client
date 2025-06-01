@@ -7,6 +7,8 @@ export default function LoginForm({ onLogin }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [nickname, setNickname] = useState('');
+    const [role, setRole] = useState('user');
+    const [adminSecret, setAdminSecret] = useState('');
     const [error, setError] = useState('');
 
     async function handleSubmit(e) {
@@ -15,11 +17,16 @@ export default function LoginForm({ onLogin }) {
 
         try {
             if (mode === 'register') {
-                await registerUser({ email, password, nickname });
+                await registerUser({
+                    email,
+                    password,
+                    nickname,
+                    role,
+                    adminSecret,
+                });
             }
 
             const { token, user } = await loginUser({ email, password });
-
             localStorage.setItem('token', token);
             onLogin(user);
         } catch (err) {
@@ -54,13 +61,36 @@ export default function LoginForm({ onLogin }) {
                         required
                     />
                     {mode === 'register' && (
-                        <input
-                            type="text"
-                            placeholder="Никнейм"
-                            value={nickname}
-                            onChange={(e) => setNickname(e.target.value)}
-                            required
-                        />
+                        <>
+                            <input
+                                type="text"
+                                placeholder="Никнейм"
+                                value={nickname}
+                                onChange={(e) => setNickname(e.target.value)}
+                                required
+                            />
+                            <select
+                                value={role}
+                                onChange={(e) => setRole(e.target.value)}
+                                className="role-select"
+                            >
+                                <option value="user">
+                                    Обычный пользователь
+                                </option>
+                                <option value="admin">Админ</option>
+                            </select>
+                            {role === 'admin' && (
+                                <input
+                                    type="password"
+                                    placeholder="Пароль администратора"
+                                    value={adminSecret}
+                                    onChange={(e) =>
+                                        setAdminSecret(e.target.value)
+                                    }
+                                    required
+                                />
+                            )}
+                        </>
                     )}
                     <input
                         type="password"

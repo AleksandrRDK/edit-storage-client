@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import LoginForm from '../../components/profile/LoginForm/LoginForm';
 import UserInfo from '../../components/profile/UserInfo/UserInfo';
@@ -16,6 +17,7 @@ export default function Profile() {
     const [error, setError] = useState(null);
     const [successMsg, setSuccessMsg] = useState(null);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -52,7 +54,8 @@ export default function Profile() {
             try {
                 const token = localStorage.getItem('token');
                 const res = await fetch(
-                    'http://localhost:5000/api/users/favorites',
+                    // 'http://localhost:5000/api/users/favorites',
+                    'https://edit-storage-server-production.up.railway.app/api/users/favorites',
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -101,7 +104,7 @@ export default function Profile() {
         setError(null);
         setSuccessMsg(null);
         setShowChangeModal(false);
-        window.location.href = '/profile';
+        navigate('/profile');
     }
 
     if (loading) {

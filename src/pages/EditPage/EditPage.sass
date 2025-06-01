@@ -54,21 +54,22 @@
         color: var(--text-secondary)
 
       .video-wrapper
+        margin: 1.5rem 0
         position: relative
-        padding-bottom: 56.25% /* 16:9 */
-        height: 0
+        width: 100%
+        aspect-ratio: 16 / 9
+        border-radius: 12px
         overflow: hidden
-        border-radius: 10px
-        box-shadow: 0 0 15px rgba(161, 140, 209, 0.5)
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2)
 
-        iframe
-          position: absolute
-          top: 0
-          left: 0
+        iframe,
+        video
           width: 100%
           height: 100%
           border: none
-          border-radius: 10px
+          display: block
+          background-color: #000
+          border-radius: inherit
 
       .edit-tags
         font-size: 1rem
@@ -83,6 +84,29 @@
           border-radius: 5px
           font-weight: 600
           user-select: none
+
+      .edit-rating
+        margin-top: 1rem
+        font-size: 1rem
+        color: var(--text-secondary)
+
+        .rating-number
+          display: block
+          margin-bottom: 0.3rem
+          text-align: center
+
+        .rating-bar-wrapper
+          width: 100%
+          height: 8px
+          background-color: #333
+          border-radius: 5px
+          overflow: hidden
+
+        .rating-bar
+          height: 100%
+          background: var(--accent-gradient)
+          border-radius: 5px
+          transition: width 0.3s ease
 
       .fav-button
         align-self: flex-start

@@ -3,6 +3,8 @@ import { fetchRandomEdits } from '../../../api/editsApi';
 import { addFavorite, removeFavorite } from '../../../api/favoritesApi';
 import EditModal from '../../../components/EditModal/EditModal';
 import Loading from '../../Loading/Loading';
+import { getCloudinaryThumbnailUrl } from '../../../utils/cloudinaryUtils';
+import { getYouTubeThumbnailUrl } from '../../../utils/youtubeUtils';
 import './RandomEditsList.sass';
 
 export default function RandomEditsList({ currentUser }) {
@@ -64,6 +66,16 @@ export default function RandomEditsList({ currentUser }) {
         }
     };
 
+    const getThumbnailUrl = (edit) => {
+        if (edit.source === 'youtube') {
+            return getYouTubeThumbnailUrl(edit.video, 'hqdefault');
+        }
+        if (edit.source === 'cloudinary') {
+            return getCloudinaryThumbnailUrl(edit.video);
+        }
+        return ''; // fallback если источник неизвестен
+    };
+
     return (
         <section className="random-edits-list">
             <h3>Рандомные эдиты</h3>
@@ -79,7 +91,9 @@ export default function RandomEditsList({ currentUser }) {
                             className="edit-card"
                             title={edit.title}
                             style={{
-                                backgroundImage: `url(https://img.youtube.com/vi/${edit.video}/hqdefault.jpg)`,
+                                backgroundImage: `url(${getThumbnailUrl(
+                                    edit
+                                )})`,
                                 cursor: 'pointer',
                             }}
                             onClick={() => setSelectedEdit(edit)}

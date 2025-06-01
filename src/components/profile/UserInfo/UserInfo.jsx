@@ -9,6 +9,10 @@ export default function UserInfo({ user, onChangePassword, onLogout }) {
         <div className="user-info">
             <h2>Профиль</h2>
             <div className="field">
+                <span>Роль:</span>
+                <span className={`role role--${user.role}`}>{user.role}</span>
+            </div>
+            <div className="field">
                 <span>Email:</span>
                 <span>{user.email}</span>
             </div>

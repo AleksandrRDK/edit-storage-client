@@ -5,6 +5,11 @@ import {
     removeFavorite,
     checkIsFavorite,
 } from '../../../api/favoritesApi';
+import {
+    getCloudinaryVideoUrl,
+    getCloudinaryThumbnailUrl,
+} from '../../../utils/cloudinaryUtils';
+import { getYouTubeEmbedUrl } from '../../../utils/youtubeUtils';
 import Loading from '../../Loading/Loading';
 import './EditOfTheDay.sass';
 
@@ -62,11 +67,24 @@ export default function EditOfTheDay() {
             <h2>Рандомный эдит дня</h2>
             <div className="content-row">
                 <div className="video-container">
-                    <iframe
-                        src={`https://www.youtube.com/embed/${edit.video}`}
-                        title="Edit of the Day"
-                        allowFullScreen
-                    />
+                    {edit.source === 'youtube' ? (
+                        <iframe
+                            src={getYouTubeEmbedUrl(edit.video)}
+                            title="Edit of the Day"
+                            allowFullScreen
+                        />
+                    ) : (
+                        <video
+                            controls
+                            poster={getCloudinaryThumbnailUrl(edit.video)}
+                        >
+                            <source
+                                src={getCloudinaryVideoUrl(edit.video)}
+                                type="video/mp4"
+                            />
+                            Ваш браузер не поддерживает видео.
+                        </video>
+                    )}
                 </div>
 
                 <div className="edit-info">
@@ -74,6 +92,20 @@ export default function EditOfTheDay() {
                         {edit.tags.map((tag, i) => (
                             <span key={i}>#{tag}</span>
                         ))}
+                    </div>
+
+                    <div className="rating-display">
+                        <span className="rating-number">
+                            {edit.rating} / 10
+                        </span>
+                        <div className="rating-bar-wrapper">
+                            <div
+                                className="rating-bar"
+                                style={{
+                                    width: `${(edit.rating / 11) * 100}%`,
+                                }}
+                            />
+                        </div>
                     </div>
 
                     <div className="meta">
