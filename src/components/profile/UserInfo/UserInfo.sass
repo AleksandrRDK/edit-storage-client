@@ -36,34 +36,25 @@
       color: var(--text)
 
   &__btn__wrapper
-    display: block
-    .change-password-btn, .logout-button
-      align-self: center
-      margin-top: 20px
-      padding: 10px 24px
-      font-weight: bold
-      font-size: 1rem
-      background: var(--accent-gradient)
-      color: var(--text)
-      text-shadow: 0 0 5px rgba(0, 0, 0, 0.7)
-      border: none
-      border-radius: 8px
-      cursor: pointer
-      transition: transform 0.2s ease
-      width: 100%
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: center
+    gap: 20px
 
-      &:hover
-        transform: scale(1.05)
-
-  .add-edit-button
-    padding: 0.5rem 1rem
-    background-color: #4caf50
-    color: white
+  .btn
+    align-self: center
+    padding: 10px 24px
+    font-weight: bold
+    font-size: 1rem
+    background: var(--accent-gradient)
+    color: var(--text)
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.7)
     border: none
     border-radius: 8px
     cursor: pointer
-    font-weight: bold
-    transition: 0.3s
-    &:hover
-      background-color: #43a047
+    transition: transform 0.2s ease
+    width: 100%
 
+    &:hover
+      transform: scale(1.05)

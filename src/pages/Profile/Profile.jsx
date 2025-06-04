@@ -6,41 +6,20 @@ import UserInfo from '../../components/profile/UserInfo/UserInfo';
 import FavoritesSection from '../../components/profile/FavoritesSection/FavoritesSection';
 import ChangePasswordModal from '../../components/profile/UserInfo/ChangePasswordModal/ChangePasswordModal';
 import Loading from '../../components/Loading/Loading';
-import { changePassword, getMe } from '../../api/authApi';
+import { changePassword } from '../../api/authApi';
+import { useUser } from '../../context/UserContext';
 
 import './Profile.sass';
 
 export default function Profile() {
-    const [user, setUser] = useState(null);
     const [favorites, setFavorites] = useState([]);
+    const [favoritesLoading, setFavoritesLoading] = useState(false);
     const [showChangeModal, setShowChangeModal] = useState(false);
     const [error, setError] = useState(null);
     const [successMsg, setSuccessMsg] = useState(null);
-    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            setLoading(false);
-            return;
-        }
-
-        getMe()
-            .then((data) => {
-                setUser(data.user);
-            })
-            .catch((err) => {
-                console.error('Ошибка при получении пользователя:', err);
-                if (err.message === 'Не удалось получить пользователя') {
-                    localStorage.removeItem('token');
-                }
-                setUser(null);
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-    }, []);
+    const { user, setUser, loading } = useUser();
 
     useEffect(() => {
         if (!user || !user.favorites?.length) {
@@ -48,7 +27,7 @@ export default function Profile() {
             return;
         }
 
-        setLoading(true);
+        setFavoritesLoading(true);
 
         const fetchFavorites = async () => {
             try {
@@ -73,7 +52,7 @@ export default function Profile() {
                 console.error(err.message);
                 setFavorites([]);
             } finally {
-                setLoading(false);
+                setFavoritesLoading(false);
             }
         };
 
@@ -107,7 +86,7 @@ export default function Profile() {
         navigate('/profile');
     }
 
-    if (loading) {
+    if (loading || favoritesLoading) {
         return (
             <main className="profile-page">
                 <Sidebar />

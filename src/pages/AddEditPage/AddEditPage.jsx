@@ -1,19 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { uploadVideoToCloudinary } from '../../utils/cloudinaryUtils';
-
 import { addEdit } from '../../api/editsApi';
-import { getMe } from '../../api/authApi';
 
 import Loading from '../../components/Loading/Loading';
 import Sidebar from '../../components/Sidebar/Sidebar';
-import RatingSelector from './RatingSelector/RatingSelector';
+import RatingSelector from '../../components/RatingSelector/RatingSelector';
+
+import { useUser } from '../../context/UserContext';
+
 import './AddEditPage.sass';
 
 export default function AddEditPage() {
-    const [user, setUser] = useState(null);
-    const [loadingUser, setLoadingUser] = useState(true);
+    const { user, loading } = useUser();
     const [source, setSource] = useState('youtube');
     const [title, setTitle] = useState('');
     const [videoUrl, setVideoUrl] = useState('');
@@ -23,21 +23,6 @@ export default function AddEditPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [rating, setRating] = useState(0);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        async function fetchUser() {
-            try {
-                const data = await getMe();
-                setUser(data.user);
-            } catch (err) {
-                setUser(null);
-                console.error(err);
-            } finally {
-                setLoadingUser(false);
-            }
-        }
-        fetchUser();
-    }, []);
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -81,11 +66,27 @@ export default function AddEditPage() {
         navigate(-1);
     }
 
-    if (loadingUser) {
+    if (loading) {
         return <Loading />;
     }
 
-    const isAdmin = user?.role === 'admin';
+    // Если пользователь не залогинен — можно показать форму логина или редирект
+    if (!user) {
+        return (
+            <main className="add-edit-page-wrapper">
+                <Sidebar />
+                <div className="add-edit-form-shield">
+                    <div className="add-edit-form">
+                        <p>
+                            Пожалуйста, войдите в систему, чтобы добавить эдит.
+                        </p>
+                    </div>
+                </div>
+            </main>
+        );
+    }
+
+    const isAdmin = user.role === 'admin';
 
     return (
         <main className="add-edit-page-wrapper">
@@ -155,11 +156,7 @@ export default function AddEditPage() {
                         />
 
                         <button type="submit" disabled={isLoading}>
-                            {isLoading ? (
-                                <Loading small />
-                            ) : (
-                                'Опубликовать эдит'
-                            )}
+                            {isLoading ? <Loading /> : 'Опубликовать эдит'}
                         </button>
                     </form>
                 </div>

@@ -11,9 +11,10 @@ import {
 } from '../../../utils/cloudinaryUtils';
 import { getYouTubeEmbedUrl } from '../../../utils/youtubeUtils';
 import Loading from '../../Loading/Loading';
+import CommentSection from '../../CommentSection/CommentSection';
 import './EditOfTheDay.sass';
 
-export default function EditOfTheDay() {
+export default function EditOfTheDay({ currentUser }) {
     const [edit, setEdit] = useState(null);
     const [isFavorite, setIsFavorite] = useState(null);
     const [loadingFav, setLoadingFav] = useState(false);
@@ -66,27 +67,6 @@ export default function EditOfTheDay() {
         <div className="edit-of-the-day">
             <h2>Рандомный эдит дня</h2>
             <div className="content-row">
-                <div className="video-container">
-                    {edit.source === 'youtube' ? (
-                        <iframe
-                            src={getYouTubeEmbedUrl(edit.video)}
-                            title="Edit of the Day"
-                            allowFullScreen
-                        />
-                    ) : (
-                        <video
-                            controls
-                            poster={getCloudinaryThumbnailUrl(edit.video)}
-                        >
-                            <source
-                                src={getCloudinaryVideoUrl(edit.video)}
-                                type="video/mp4"
-                            />
-                            Ваш браузер не поддерживает видео.
-                        </video>
-                    )}
-                </div>
-
                 <div className="edit-info">
                     <div className="tags">
                         {edit.tags.map((tag, i) => (
@@ -107,15 +87,6 @@ export default function EditOfTheDay() {
                             />
                         </div>
                     </div>
-
-                    <div className="meta">
-                        <span className="author">Автор: @{edit.author}</span>
-                        <span className="date">Добавлено: {edit.date}</span>
-                        <span className="comments">
-                            💬 {edit.commentsCount || 0} комментария
-                        </span>
-                    </div>
-
                     {isFavorite !== null && (
                         <button
                             className="fav-button"
@@ -125,8 +96,34 @@ export default function EditOfTheDay() {
                             {isFavorite ? '❤️ В избранном' : '♡ В избранное'}
                         </button>
                     )}
-
+                    <div className="meta">
+                        <span className="author">Автор: @{edit.author}</span>
+                        <span className="date">
+                            Добавлено: {edit.createdAt}
+                        </span>
+                        <CommentSection editId={edit._id} user={currentUser} />
+                    </div>
                     {error && <div className="error-message">{error}</div>}
+                </div>
+                <div className="video-container">
+                    {edit.source === 'youtube' ? (
+                        <iframe
+                            src={getYouTubeEmbedUrl(edit.video)}
+                            title="Edit of the Day"
+                            allowFullScreen
+                        />
+                    ) : (
+                        <video
+                            controls
+                            poster={getCloudinaryThumbnailUrl(edit.video)}
+                        >
+                            <source
+                                src={getCloudinaryVideoUrl(edit.video)}
+                                type="video/mp4"
+                            />
+                            Ваш браузер не поддерживает видео.
+                        </video>
+                    )}
                 </div>
             </div>
         </div>

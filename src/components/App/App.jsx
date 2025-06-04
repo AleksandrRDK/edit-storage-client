@@ -4,7 +4,9 @@ import Main from '../../pages/main/Main';
 import AllEdits from '../../pages/AllEdits/AllEdits';
 import Profile from '../../pages/Profile/Profile';
 import AddEditPage from '../../pages/AddEditPage/AddEditPage';
-import EditPage from '../../pages/EditPage/EditPage';
+import EditPage from '../../pages/edit/EditPage/EditPage';
+import ModifyEdit from '../../pages/edit/ModifyEdit/ModifyEdit';
+import MyEdits from '../../pages/edit/MyEdits/MyEdits';
 
 function App() {
     return (
@@ -15,6 +17,8 @@ function App() {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/add-edit" element={<AddEditPage />} />
                 <Route path="/edit/:id" element={<EditPage />} />
+                <Route path="/edit/:id/modify" element={<ModifyEdit />} />
+                <Route path="/my-edits" element={<MyEdits />} />
             </Routes>
         </Router>
     );

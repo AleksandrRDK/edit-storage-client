@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import Sidebar from '../../components/Sidebar/Sidebar';
-import { fetchEditById } from '../../api/editsApi';
+import Sidebar from '../../../components/Sidebar/Sidebar';
+import { fetchEditById } from '../../../api/editsApi';
 import {
     removeFavorite,
     addFavorite,
     checkIsFavorite,
-} from '../../api/favoritesApi';
-import Loading from '../../components/Loading/Loading';
-import { getYouTubeEmbedUrl } from '../../utils/youtubeUtils';
-import { getCloudinaryVideoUrl } from '../../utils/cloudinaryUtils';
+} from '../../../api/favoritesApi';
+import Loading from '../../../components/Loading/Loading';
+import CommentSection from '../../../components/CommentSection/CommentSection';
+import { getYouTubeEmbedUrl } from '../../../utils/youtubeUtils';
+import { getCloudinaryVideoUrl } from '../../../utils/cloudinaryUtils';
+import { useUser } from '../../../context/UserContext';
 import './EditPage.sass';
 
 export default function EditPage() {
@@ -20,6 +22,8 @@ export default function EditPage() {
     const [error, setError] = useState(null);
     const [isFavorite, setIsFavorite] = useState(null);
     const [loadingFav, setLoadingFav] = useState(false);
+
+    const { user } = useUser();
 
     const token = localStorage.getItem('token');
 
@@ -157,6 +161,7 @@ export default function EditPage() {
                                     ? '❤️ В избранном'
                                     : '♡ В избранное'}
                             </button>
+                            <CommentSection editId={edit._id} user={user} />
                             <p className="edit-meta">
                                 Создан:{' '}
                                 <time dateTime={edit.createdAt}>

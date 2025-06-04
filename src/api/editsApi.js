@@ -78,22 +78,6 @@ export async function addEdit({ title, videoUrl, tags, source, rating }) {
         throw new Error('Неизвестный источник видео');
     }
 
-    // Получаем текущего пользователя
-    const resUser = await fetch(
-        // 'http://localhost:5000/api/auth/me',
-        'https://edit-storage-server-production.up.railway.app/api/auth/me',
-        {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        }
-    );
-    const userData = await resUser.json();
-    if (!resUser.ok)
-        throw new Error(userData.message || 'Ошибка получения пользователя');
-
-    const author = userData.user.nickname;
-
     // Обработка тегов
     const tagsArray = tags
         .split(',')
@@ -103,7 +87,6 @@ export async function addEdit({ title, videoUrl, tags, source, rating }) {
     // Подготовка данных
     const newEdit = {
         title,
-        author,
         video: videoId,
         tags: tagsArray,
         source,
@@ -126,6 +109,46 @@ export async function addEdit({ title, videoUrl, tags, source, rating }) {
     return data;
 }
 
+export async function updateEdit(id, updatedData) {
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('Вы не авторизованы');
+
+    const res = await fetch(`${API_URL}/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedData),
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+        throw new Error(data.message || 'Ошибка при обновлении эдита');
+    }
+
+    return data;
+}
+
+export async function deleteEdit(id) {
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('Вы не авторизованы');
+
+    const res = await fetch(`${API_URL}/${id}`, {
+        method: 'DELETE',
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+        throw new Error(data.message || 'Ошибка при удалении эдита');
+    }
+
+    return data;
+}
+
 export async function fetchEditById(id) {
     const res = await fetch(`${API_URL}/${id}`);
     if (!res.ok) {
@@ -133,4 +156,39 @@ export async function fetchEditById(id) {
         throw new Error(errorData.message || 'Ошибка загрузки эдита');
     }
     return res.json();
+}
+
+export async function fetchMyEdits() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        throw new Error('Вы не авторизованы');
+    }
+
+    try {
+        const res = await fetch(`${API_URL}/my`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            console.error(
+                'Ошибка в ответе сервера:',
+                data.message || data.error || 'Неизвестная ошибка'
+            );
+            throw new Error(
+                data.message ||
+                    data.error ||
+                    'Ошибка при получении ваших эдитов'
+            );
+        }
+
+        return data;
+    } catch (err) {
+        console.error('Ошибка при выполнении fetchMyEdits:', err);
+        throw err;
+    }
 }

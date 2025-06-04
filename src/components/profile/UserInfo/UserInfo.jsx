@@ -25,21 +25,18 @@ export default function UserInfo({ user, onChangePassword, onLogout }) {
                 <span>{formattedDate}</span>
             </div>
             <div className="user-info__btn__wrapper">
-                <button
-                    className="change-password-btn"
-                    onClick={onChangePassword}
-                >
+                <button className="btn" onClick={onChangePassword}>
                     Изменить пароль
                 </button>
-                <button className="logout-button" onClick={onLogout}>
+                <button className="btn" onClick={onLogout}>
                     Выйти
                 </button>
             </div>
-            <button
-                className="add-edit-button"
-                onClick={() => navigate('/add-edit')}
-            >
+            <button className="btn" onClick={() => navigate('/add-edit')}>
                 + Добавить эдит
+            </button>
+            <button className="btn" onClick={() => navigate('/my-edits')}>
+                Ваши эдиты
             </button>
         </div>
     );
