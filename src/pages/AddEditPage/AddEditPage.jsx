@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { uploadVideoToCloudinary } from '../../utils/cloudinaryUtils';
 import { addEdit } from '../../api/editsApi';
 
 import Loading from '../../components/Loading/Loading';
@@ -26,39 +25,99 @@ export default function AddEditPage() {
 
     async function handleSubmit(e) {
         e.preventDefault();
+
+        if (!title.trim() || title.length < 3) {
+            setMessage({
+                type: 'error',
+                text: 'Введите корректное название (минимум 3 символа)',
+            });
+            return;
+        }
+
+        if (!rating || rating < 1 || rating > 11) {
+            setMessage({ type: 'error', text: 'Поставьте оценку видео' });
+            return;
+        }
+
+        if (tags.trim()) {
+            const tagArray = tags
+                .split(',')
+                .map((tag) => tag.trim())
+                .filter((tag) => tag.length > 0);
+
+            if (tagArray.length > 10) {
+                setMessage({
+                    type: 'error',
+                    text: 'Можно указать максимум 10 тегов',
+                });
+                return;
+            }
+
+            const invalidTag = tagArray.find((tag) => tag.length > 20);
+            if (invalidTag) {
+                setMessage({
+                    type: 'error',
+                    text: `Тег "${invalidTag}" слишком длинный (макс. 20 символов)`,
+                });
+                return;
+            }
+        }
+
+        if (source === 'youtube') {
+            const isYoutubeLink =
+                /^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\//.test(videoUrl);
+            if (!videoUrl || !isYoutubeLink) {
+                setMessage({
+                    type: 'error',
+                    text: 'Введите корректную ссылку на YouTube',
+                });
+                return;
+            }
+        } else if (source === 'cloudinary') {
+            if (!videoFile) {
+                setMessage({ type: 'error', text: 'Загрузите видеофайл' });
+                return;
+            }
+
+            if (!videoFile.type.startsWith('video/')) {
+                setMessage({ type: 'error', text: 'Файл должен быть видео' });
+                return;
+            }
+
+            const maxSize = 100 * 1024 * 1024; // 100MB
+            if (videoFile.size > maxSize) {
+                setMessage({
+                    type: 'error',
+                    text: 'Файл слишком большой (макс. 100MB)',
+                });
+                return;
+            }
+        }
+
         setIsLoading(true);
 
         try {
-            let finalVideoUrl = videoUrl;
-
-            if (source === 'cloudinary') {
-                if (!videoFile)
-                    throw new Error('Выберите видеофайл для загрузки.');
-                finalVideoUrl = await uploadVideoToCloudinary(videoFile);
-            }
-
             await addEdit({
                 title,
-                videoUrl: finalVideoUrl,
+                videoUrl,
+                videoFile,
                 tags,
                 source,
                 rating,
             });
 
             setMessage({ type: 'success', text: 'Эдит успешно добавлен!' });
-            setTimeout(() => {
-                navigate('/profile');
-            }, 1000);
-        } catch (err) {
-            setMessage({ type: 'error', text: err.message });
-        } finally {
-            setIsLoading(false);
+
             setTitle('');
             setVideoUrl('');
             setTags('');
             setSource('youtube');
             setVideoFile(null);
             setRating(0);
+        } catch (err) {
+            setMessage({ type: 'error', text: err.message });
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -76,6 +135,7 @@ export default function AddEditPage() {
             <main className="add-edit-page-wrapper">
                 <Sidebar />
                 <div className="add-edit-form-shield">
+                    <div className="void__field"></div>
                     <div className="add-edit-form">
                         <p>
                             Пожалуйста, войдите в систему, чтобы добавить эдит.
@@ -140,6 +200,11 @@ export default function AddEditPage() {
                                 required
                             />
                         )}
+
+                        <div className="tag-hint">
+                            ❗ Пишите теги с умом, например:{' '}
+                            <b>аниме, наруто, экшен</b>
+                        </div>
 
                         <input
                             type="text"

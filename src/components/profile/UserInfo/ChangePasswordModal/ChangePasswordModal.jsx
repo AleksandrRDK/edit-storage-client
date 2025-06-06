@@ -11,14 +11,34 @@ export default function ChangePasswordModal({ onClose, onSubmit }) {
 
     async function handleSubmit(e) {
         e.preventDefault();
+
+        if (
+            !currentPassword.trim() ||
+            !newPassword.trim() ||
+            !confirmPassword.trim()
+        ) {
+            setError('Заполните все поля');
+            return;
+        }
+
+        if (newPassword.length < 6) {
+            setError('Новый пароль должен содержать минимум 6 символов');
+            return;
+        }
+
+        if (currentPassword === newPassword) {
+            setError('Новый пароль должен отличаться от текущего');
+            return;
+        }
+
         if (newPassword !== confirmPassword) {
             setError('Пароли не совпадают');
             return;
         }
+
         setError('');
         setLoading(true);
         try {
-            // Предполагаем, что onSubmit возвращает Promise
             await onSubmit({ oldPassword: currentPassword, newPassword });
         } catch (err) {
             setError(err.message || 'Ошибка при смене пароля');

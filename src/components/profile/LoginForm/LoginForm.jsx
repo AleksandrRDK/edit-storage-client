@@ -15,6 +15,32 @@ export default function LoginForm({ onLogin }) {
         e.preventDefault();
         setError('');
 
+        if (!email) {
+            setError('Введите email');
+            return;
+        }
+
+        if (!password) {
+            setError('Введите пароль');
+            return;
+        }
+
+        if (mode === 'register') {
+            if (!nickname) {
+                setError('Введите никнейм');
+                return;
+            }
+        }
+
+        if (password.length < 8) {
+            setError('Пароль должен быть не менее 8 символов');
+            return;
+        }
+        if (role === 'admin' && !adminSecret) {
+            setError('Введите пароль администратора');
+            return;
+        }
+
         try {
             if (mode === 'register') {
                 await registerUser({

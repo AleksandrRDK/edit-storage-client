@@ -34,12 +34,17 @@ export default function CommentSection({ editId, user }) {
     }, [editId]);
 
     async function handleAddComment() {
-        if (!newComment.trim()) return;
+        const trimmed = newComment.trim();
+        if (!trimmed) {
+            setError('Комментарий не может быть пустым');
+            return;
+        }
+
         setLoading(true);
         try {
             const comment = await addComment({
                 editId,
-                text: newComment,
+                text: trimmed,
             });
             setComments([comment, ...comments]);
             setNewComment('');
@@ -84,6 +89,19 @@ export default function CommentSection({ editId, user }) {
         }
     }
 
+    function formatDateTime(dateString) {
+        const date = new Date(dateString);
+
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
+
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+
+        return `${day}.${month}.${year} ${hours}:${minutes}`;
+    }
+
     if (loading) {
         return <Loading />;
     }
@@ -99,8 +117,21 @@ export default function CommentSection({ editId, user }) {
                     <textarea
                         placeholder="Оставьте комментарий..."
                         value={newComment}
-                        onChange={(e) => setNewComment(e.target.value)}
+                        onChange={(e) => {
+                            setNewComment(e.target.value);
+                            if (error) setError(null);
+                        }}
+                        maxLength={400}
+                        className={error ? 'error' : ''}
                     />
+                    <div className="comment-info">
+                        {newComment.trim().length > 370 && (
+                            <span className="char-counter">
+                                Осталось символов:{' '}
+                                {400 - newComment.trim().length}
+                            </span>
+                        )}
+                    </div>
                     <button onClick={handleAddComment}>Добавить</button>
                 </div>
             )}
@@ -112,9 +143,7 @@ export default function CommentSection({ editId, user }) {
                             <strong>
                                 {comment.author?.nickname || 'Пользователь'}
                             </strong>
-                            <span>
-                                {new Date(comment.createdAt).toLocaleString()}
-                            </span>
+                            <span>{formatDateTime(comment.createdAt)}</span>
                         </div>
 
                         {editingId === comment._id ? (

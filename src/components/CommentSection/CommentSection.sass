@@ -3,7 +3,6 @@
   color: var(--text)
   padding: 1rem
   border-radius: 1rem
-  margin-top: 2rem
   width: 100%
 
   h3
@@ -23,12 +22,22 @@
     margin-bottom: 1rem
 
     textarea
+      min-height: 150px
       background: var(--bg)
       color: var(--text)
       border: 1px solid var(--accent-plain)
       border-radius: 0.5rem
       padding: 0.5rem
-      resize: vertical
+      resize: none
+      scrollbar-width: none
+      -ms-overflow-style: none
+      overflow-y: auto
+
+      &::-webkit-scrollbar
+        display: none
+
+    .char-counter
+      color: var(--accent-plain)
 
     button
       align-self: flex-end
@@ -40,12 +49,18 @@
       cursor: pointer
 
   .comments-list
-    max-height: 400px
+    max-height: 300px
     overflow-y: auto
     padding-right: 0.5rem
     display: flex
     flex-direction: column
     gap: 0.5rem
+    scrollbar-width: none
+    -ms-overflow-style: none
+    overflow-y: auto
+
+    &::-webkit-scrollbar
+      display: none
 
   .comment-card
     display: flex
@@ -63,12 +78,20 @@
       color: var(--text-secondary)
 
     textarea
+      min-height: 100px
       width: 100%
       background: var(--bg)
       color: var(--text)
       border: 1px solid var(--accent-secondary)
       border-radius: 0.5rem
       padding: 0.5rem
+      resize: none
+      scrollbar-width: none
+      -ms-overflow-style: none
+      overflow-y: auto
+
+      &::-webkit-scrollbar
+        display: none
 
     .actions
       display: flex

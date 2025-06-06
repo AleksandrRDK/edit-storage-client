@@ -20,8 +20,8 @@ export default function ModifyEdit() {
         rating: 0,
     });
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [showDeleteModal, setShowDeleteModal] = useState(false); // 👈 модалка
+    const [error, setError] = useState('');
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     useEffect(() => {
         async function loadEdit() {
@@ -52,13 +52,39 @@ export default function ModifyEdit() {
 
     const handleUpdate = async (e) => {
         e.preventDefault();
+
+        // Валидация названия
+        const trimmedTitle = formData.title.trim();
+        if (trimmedTitle.length < 3) {
+            setError('Название должно быть не короче 3 символов');
+            return;
+        }
+        if (trimmedTitle.length > 30) {
+            setError('Название слишком длинное (макс. 30 символов)');
+            return;
+        }
+
+        // Валидация тегов
+        const tagArray = formData.tags
+            .split(',')
+            .map((tag) => tag.trim())
+            .filter(Boolean);
+
+        if (tagArray.length > 10) {
+            setError('Можно указать максимум 10 тегов');
+            return;
+        }
+
+        const invalidTag = tagArray.find((tag) => tag.length > 20);
+        if (invalidTag) {
+            setError(`Тег "${invalidTag}" слишком длинный (макс. 20 символов)`);
+            return;
+        }
+
         try {
             const updated = {
-                title: formData.title,
-                tags: formData.tags
-                    .split(',')
-                    .map((tag) => tag.trim())
-                    .filter(Boolean),
+                title: trimmedTitle,
+                tags: tagArray,
                 rating: formData.rating,
             };
             await updateEdit(id, updated);
@@ -78,7 +104,6 @@ export default function ModifyEdit() {
     };
 
     if (loading || userLoading) return <Loading />;
-    if (error) return <div className="modify-edit error">Ошибка: {error}</div>;
     if (!edit) return null;
 
     const isAdmin = user?.role === 'admin';
@@ -87,6 +112,7 @@ export default function ModifyEdit() {
         <main className="add-edit-page-wrapper">
             <Sidebar />
             <div className="add-edit-form-shield">
+                <div className="void__field"></div>
                 <div className="add-edit-form modify-edit">
                     <button
                         className="delete-icon"

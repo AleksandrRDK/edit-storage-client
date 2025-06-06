@@ -1,9 +1,6 @@
 .filters
-  margin-bottom: 2rem
   max-width: 600px
   width: 90%
-  margin-left: auto
-  margin-right: auto
   color: var(--text)
 
   h4
@@ -16,6 +13,7 @@
     display: flex
     flex-wrap: wrap
     gap: 0.6rem
+    margin-bottom: 10px
 
     .tag-btn
       background-color: var(--card-bg)
@@ -36,6 +34,33 @@
         background-color: var(--accent-secondary)
         border-color: var(--accent-secondary)
         color: var(--bg)
+
+  .ratings-list
+    display: flex
+    flex-wrap: wrap
+    gap: 8px
+    margin-top: 12px
+
+    .rating-btn
+      background-color: var(--card-bg)
+      border: 1px solid var(--accent-plain)
+      border-radius: 8px
+      padding: 6px 10px
+      font-size: 14px
+      color: var(--text-secondary)
+      cursor: pointer
+      transition: background-color 0.2s, color 0.2s, border-color 0.2s
+
+      &:hover
+        background-color: var(--accent-secondary)
+        color: var(--bg)
+
+      &.active
+        background: var(--accent-gradient)
+        color: var(--bg)
+        font-weight: bold
+        border-color: transparent
+
   .filter-icon-btn
     background: none
     border: none
@@ -55,6 +80,7 @@
     align-items: center
     justify-content: center
     z-index: 999
+    overflow-y: auto
 
   .filter-modal-content
     position: relative
@@ -62,8 +88,9 @@
     color: var(--text)
     padding: 1.5rem
     border-radius: 12px
-    max-width: 500px
-    width: 90%
+    width: 50%
+    max-height: 90vh
+    overflow-y: auto
 
   .close-btn
     background: none

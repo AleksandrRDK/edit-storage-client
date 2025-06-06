@@ -1,9 +1,7 @@
 import './UserInfo.sass';
-import { useNavigate } from 'react-router-dom';
 
 export default function UserInfo({ user, onChangePassword, onLogout }) {
     const formattedDate = new Date(user.createdAt).toLocaleDateString('ru-RU');
-    const navigate = useNavigate();
 
     return (
         <div className="user-info">
@@ -32,12 +30,6 @@ export default function UserInfo({ user, onChangePassword, onLogout }) {
                     Выйти
                 </button>
             </div>
-            <button className="btn" onClick={() => navigate('/add-edit')}>
-                + Добавить эдит
-            </button>
-            <button className="btn" onClick={() => navigate('/my-edits')}>
-                Ваши эдиты
-            </button>
         </div>
     );
 }

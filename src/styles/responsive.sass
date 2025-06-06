@@ -9,15 +9,22 @@
       margin-left: 270px
       .add-edit-form
         min-width: auto
+        max-width: 90%
+
+  .favorites-section
+    .favorites-list
+      justify-content: center
+      align-items: center
+      .edit-card
+        width: 100% !important
 
 @media (max-width: 640px)
+  .void__field
+    min-width: 0
   .edit-of-the-day
     .content-row
-      flex-direction: column
-  .random-edits-list
-    .edit-card
-      width: 100px
-      height: 160px
+      .video-container, .edit-info
+        width: 100% !important
   .all-edit-card
     width: 120px !important
     height: 220px !important
@@ -27,41 +34,28 @@
 
   .sidebar
     width: 100% !important
-    height: auto !important
-    min-height: 100px
-    flex-direction: row !important
-    padding: 0.5rem 1rem !important
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important
-    background-position: center !important
-    background-size: cover !important
+    height: 100% !important
+    flex-direction: column !important
+    padding: 2rem 1rem !important
+    transform: translateX(-100%) !important
+    transition: transform 0.3s ease !important
 
     nav
-      flex-direction: row !important
-      justify-content: space-between !important
-      align-items: center !important
-      width: 100% !important
-      padding: 0.5rem 1rem !important
-      gap: 1rem !important
-
-      .logo
-        font-size: 1.2rem !important
-        margin: 0 !important
-
       .nav-list
-        flex-direction: row !important
-        gap: 0.5rem !important
-        width: auto !important
+        flex-direction: column !important
 
-        a
-          padding: 0.3rem 0.5rem !important
-          font-size: 0.9rem !important
+  .sidebar.open
+    transform: translateX(0) !important
+
+  .hamburger__wrapper, .hamburger
+    display: flex !important
+  .logo
+    display: none
 
   .main-page
-    margin-top: 100px
     padding-left: 0 !important
   .all-edits-page, .edit-detail-content, .profile-page-wrapper, .add-edit-form-shield
     margin-left: 0 !important
-    margin-top: 100px
 
   .edit-detail-content
     justify-content: center
@@ -73,12 +67,23 @@
         margin: 0
 
 @media (max-width: 320px)
-  .logo
-    display: none
   .profile-page-wrapper, .user-info
     width: 100% !important
     .field
       flex-direction: column
 
-  .all-edit-card
-    width: 100% !important
+  .random-edits-list
+    .edit-card
+      width: 100% !important
+
+  .favorites-section
+    .favorites-header
+      flex-direction: column
+      gap: 10px
+
+  .add-edit-page-wrapper
+    .add-edit-form
+      max-width: 100% !important
+      padding: 25px !important
+      h2
+        margin-top: 20px

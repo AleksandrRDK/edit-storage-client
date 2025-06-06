@@ -7,13 +7,17 @@ import FavoritesSection from '../../components/profile/FavoritesSection/Favorite
 import ChangePasswordModal from '../../components/profile/UserInfo/ChangePasswordModal/ChangePasswordModal';
 import Loading from '../../components/Loading/Loading';
 import { changePassword } from '../../api/authApi';
+import { getFavorites } from '../../api/favoritesApi';
 import { useUser } from '../../context/UserContext';
 
 import './Profile.sass';
 
 export default function Profile() {
     const [favorites, setFavorites] = useState([]);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
     const [favoritesLoading, setFavoritesLoading] = useState(false);
+    const [total, setTotal] = useState(null);
     const [showChangeModal, setShowChangeModal] = useState(false);
     const [error, setError] = useState(null);
     const [successMsg, setSuccessMsg] = useState(null);
@@ -32,25 +36,15 @@ export default function Profile() {
         const fetchFavorites = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch(
-                    // 'http://localhost:5000/api/users/favorites',
-                    'https://edit-storage-server-production.up.railway.app/api/users/favorites',
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
-
-                if (!res.ok) {
-                    throw new Error('Не удалось загрузить избранные эдиты');
-                }
-
-                const data = await res.json();
+                const data = await getFavorites(token, 1);
                 setFavorites(data.edits);
+                setHasMore(data.hasMore);
+                setTotal(data.total);
+                setPage(1);
             } catch (err) {
                 console.error(err.message);
                 setFavorites([]);
+                setHasMore(false);
             } finally {
                 setFavoritesLoading(false);
             }
@@ -127,8 +121,29 @@ export default function Profile() {
 
                         <hr className="section-divider" />
                         <FavoritesSection
+                            total={total}
                             favorites={favorites}
                             currentUser={user}
+                            onLoadMore={() => {
+                                const token = localStorage.getItem('token');
+                                getFavorites(token, page + 1)
+                                    .then((data) => {
+                                        setFavorites((prev) => [
+                                            ...prev,
+                                            ...data.edits,
+                                        ]);
+                                        setPage((prev) => prev + 1);
+                                        setHasMore(data.hasMore);
+                                    })
+                                    .catch((err) => {
+                                        console.error(
+                                            'Ошибка при загрузке избранных эдитов:',
+                                            err.message
+                                        );
+                                        setHasMore(false);
+                                    });
+                            }}
+                            hasMore={hasMore}
                         />
                     </>
                 )}

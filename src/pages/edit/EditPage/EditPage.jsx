@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Sidebar from '../../../components/Sidebar/Sidebar';
 import { fetchEditById } from '../../../api/editsApi';
@@ -22,7 +22,8 @@ export default function EditPage() {
     const [error, setError] = useState(null);
     const [isFavorite, setIsFavorite] = useState(null);
     const [loadingFav, setLoadingFav] = useState(false);
-
+    const [isLooping, setIsLooping] = useState(false);
+    const videoRef = useRef(null);
     const { user } = useUser();
 
     const token = localStorage.getItem('token');
@@ -98,17 +99,33 @@ export default function EditPage() {
                     {edit && (
                         <article className="edit-card">
                             <h1 className="edit-title">{edit.title}</h1>
-                            <p className="edit-author">
-                                Автор: <b>{edit.author || 'аноним'}</b>
-                            </p>
-
+                            <div className="wrapper">
+                                <p className="edit-author">
+                                    Автор: <b>{edit.author || 'аноним'}</b>
+                                </p>
+                                <button
+                                    className="loop-button"
+                                    onClick={() => setIsLooping(!isLooping)}
+                                >
+                                    {isLooping
+                                        ? '🔁 Повтор включён'
+                                        : '⏹ Повтор выключен'}
+                                </button>
+                            </div>
                             <div className="video-wrapper">
                                 {edit.source === 'cloudinary' ? (
                                     <video
+                                        ref={videoRef}
                                         controls
                                         poster={getCloudinaryVideoUrl(
                                             edit.video
                                         )}
+                                        onEnded={() => {
+                                            if (isLooping && videoRef.current) {
+                                                videoRef.current.currentTime = 0;
+                                                videoRef.current.play();
+                                            }
+                                        }}
                                     >
                                         <source
                                             src={getCloudinaryVideoUrl(
@@ -126,7 +143,6 @@ export default function EditPage() {
                                     />
                                 )}
                             </div>
-
                             <p className="edit-tags">
                                 Теги:{' '}
                                 {edit.tags && edit.tags.length > 0

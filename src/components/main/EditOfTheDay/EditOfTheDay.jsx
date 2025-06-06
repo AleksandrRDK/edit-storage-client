@@ -18,7 +18,7 @@ export default function EditOfTheDay({ currentUser }) {
     const [edit, setEdit] = useState(null);
     const [isFavorite, setIsFavorite] = useState(null);
     const [loadingFav, setLoadingFav] = useState(false);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState('');
 
     const token = localStorage.getItem('token');
 
@@ -67,7 +67,41 @@ export default function EditOfTheDay({ currentUser }) {
         <div className="edit-of-the-day">
             <h2>Рандомный эдит дня</h2>
             <div className="content-row">
+                <div className="video-container">
+                    {edit.source === 'youtube' ? (
+                        <iframe
+                            src={getYouTubeEmbedUrl(edit.video)}
+                            title="Edit of the Day"
+                            allowFullScreen
+                        />
+                    ) : (
+                        <video
+                            controls
+                            poster={getCloudinaryThumbnailUrl(edit.video)}
+                        >
+                            <source
+                                src={getCloudinaryVideoUrl(edit.video)}
+                                type="video/mp4"
+                            />
+                            Ваш браузер не поддерживает видео.
+                        </video>
+                    )}
+                </div>
                 <div className="edit-info">
+                    <div className="meta">
+                        <span className="author">Автор: @{edit.author}</span>
+                        <span className="date">
+                            Добавлено:{' '}
+                            {new Date(edit.createdAt).toLocaleString('ru-RU', {
+                                day: 'numeric',
+                                month: 'long',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                timeZone: 'Europe/Moscow',
+                            })}
+                        </span>
+                    </div>
                     <div className="tags">
                         {edit.tags.map((tag, i) => (
                             <span key={i}>#{tag}</span>
@@ -96,34 +130,8 @@ export default function EditOfTheDay({ currentUser }) {
                             {isFavorite ? '❤️ В избранном' : '♡ В избранное'}
                         </button>
                     )}
-                    <div className="meta">
-                        <span className="author">Автор: @{edit.author}</span>
-                        <span className="date">
-                            Добавлено: {edit.createdAt}
-                        </span>
-                        <CommentSection editId={edit._id} user={currentUser} />
-                    </div>
-                    {error && <div className="error-message">{error}</div>}
-                </div>
-                <div className="video-container">
-                    {edit.source === 'youtube' ? (
-                        <iframe
-                            src={getYouTubeEmbedUrl(edit.video)}
-                            title="Edit of the Day"
-                            allowFullScreen
-                        />
-                    ) : (
-                        <video
-                            controls
-                            poster={getCloudinaryThumbnailUrl(edit.video)}
-                        >
-                            <source
-                                src={getCloudinaryVideoUrl(edit.video)}
-                                type="video/mp4"
-                            />
-                            Ваш браузер не поддерживает видео.
-                        </video>
-                    )}
+                    {error && <div className="error">{error}</div>}
+                    <CommentSection editId={edit._id} user={currentUser} />
                 </div>
             </div>
         </div>

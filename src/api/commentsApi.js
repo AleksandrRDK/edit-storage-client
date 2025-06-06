@@ -1,7 +1,7 @@
 // для разработки
-// const BASE_URL = 'http://localhost:5000/api/comments';
-const BASE_URL =
-    'https://edit-storage-server-production.up.railway.app/api/comments';
+const BASE_URL = 'http://localhost:5000/api/comments';
+// const BASE_URL =
+//     'https://edit-storage-server-production.up.railway.app/api/comments';
 
 export async function getCommentsByEditId(editId) {
     const res = await fetch(`${BASE_URL}/${editId}`);

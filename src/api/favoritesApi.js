@@ -1,7 +1,7 @@
 // для разработки
-// const API_BASE = 'http://localhost:5000/api/users/favorites';
-const API_BASE =
-    'https://edit-storage-server-production.up.railway.app/api/users/favorites';
+const API_BASE = 'http://localhost:5000/api/users/favorites';
+// const API_BASE =
+//     'https://edit-storage-server-production.up.railway.app/api/users/favorites';
 
 export async function addFavorite(editId, token) {
     const res = await fetch(`${API_BASE}/${editId}`, {
@@ -33,17 +33,26 @@ export async function removeFavorite(editId, token) {
     return res.json();
 }
 
-export async function getFavorites(token, page = 1, limit = 20) {
+export async function getFavorites(token, page = 1, limit = 16) {
     const res = await fetch(`${API_BASE}?page=${page}&limit=${limit}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
     });
+
     if (!res.ok) {
         const error = await res.json();
         throw new Error(error.message || 'Ошибка загрузки избранного');
     }
-    return res.json();
+
+    const data = await res.json();
+
+    return {
+        edits: data.edits || [],
+        hasMore: data.hasMore || false,
+        total: data.total || 0,
+        page: data.page,
+    };
 }
 
 export async function checkIsFavorite(editId, token) {

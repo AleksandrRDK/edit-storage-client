@@ -20,23 +20,34 @@
 
   .content-row
     display: flex
-    width: 100%
     gap: 1.5rem
-    align-items: flex-start
+    width: 100%
+    flex-direction: column
+    align-items: center
+    justify-content: space-around
 
     .video-container
-      flex: 0 0 60%
+      background: var(--card-bg)
+      padding: 2px
+      border: 2px solid var(--accent-plain)
+      border-radius: 1rem
+      box-shadow: 0 0 10px rgba(161, 140, 209, 0.3)
       aspect-ratio: 16 / 9
       display: flex
       align-items: center
       justify-content: center
+      width: 80%
+      height: 60%
       iframe
         width: 100%
         height: 100%
         border-radius: 10px
+      video
+        width: 100%
+        height: 100%
 
     .edit-info
-      flex: 1
+      width: 80%
       display: flex
       flex-direction: column
       justify-content: space-between

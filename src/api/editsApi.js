@@ -1,7 +1,7 @@
 // для разработки
-// const API_URL = 'http://localhost:5000/api/edits';
-const API_URL =
-    'https://edit-storage-server-production.up.railway.app/api/edits';
+const API_URL = 'http://localhost:5000/api/edits';
+// const API_URL =
+//     'https://edit-storage-server-production.up.railway.app/api/edits';
 
 export async function fetchEdits() {
     const res = await fetch(API_URL);
@@ -28,22 +28,51 @@ export async function fetchPaginatedEdits(skip = 0, limit = 10) {
     return res.json();
 }
 
-export async function addEdit({ title, videoUrl, tags, source, rating }) {
+export async function addEdit({
+    title,
+    videoUrl,
+    videoFile,
+    tags,
+    source,
+    rating,
+}) {
     const token = localStorage.getItem('token');
     if (!token) throw new Error('Вы не авторизованы');
 
-    let videoId;
+    const tagsArray = tags
+        .split(',')
+        .map((tag) => tag.trim())
+        .filter((tag) => tag);
 
+    // YouTube: отправляем JSON
     if (source === 'youtube') {
         function extractYouTubeId(url) {
             try {
                 const urlObj = new URL(url);
+
+                // youtu.be/VIDEO_ID
                 if (urlObj.hostname.includes('youtu.be')) {
                     return urlObj.pathname.slice(1);
                 }
+
+                // youtube.com/watch?v=VIDEO_ID
                 if (urlObj.hostname.includes('youtube.com')) {
-                    return urlObj.searchParams.get('v');
+                    const v = urlObj.searchParams.get('v');
+                    if (v) return v;
+
+                    // youtube.com/shorts/VIDEO_ID
+                    const match = urlObj.pathname.match(
+                        /\/shorts\/([a-zA-Z0-9_-]{11})/
+                    );
+                    if (match) return match[1];
+
+                    // youtube.com/embed/VIDEO_ID
+                    const embed = urlObj.pathname.match(
+                        /\/embed\/([a-zA-Z0-9_-]{11})/
+                    );
+                    if (embed) return embed[1];
                 }
+
                 return null;
             } catch (err) {
                 console.error(err);
@@ -51,62 +80,60 @@ export async function addEdit({ title, videoUrl, tags, source, rating }) {
             }
         }
 
-        videoId = extractYouTubeId(videoUrl);
+        const videoId = extractYouTubeId(videoUrl);
         if (!videoId) throw new Error('Некорректная ссылка на YouTube');
-    } else if (source === 'cloudinary') {
-        try {
-            const urlObj = new URL(videoUrl);
 
-            // Ищем, где начинается `upload/`, и берём всё после этого
-            const uploadIndex = urlObj.pathname.indexOf('/upload/');
-            if (uploadIndex === -1) {
-                throw new Error('Некорректная ссылка — отсутствует /upload/');
-            }
+        const newEdit = {
+            title,
+            video: videoId,
+            tags: tagsArray,
+            source,
+            rating,
+        };
 
-            const publicIdWithExt = urlObj.pathname.slice(uploadIndex + 8); // без "/upload/"
-            const publicId = publicIdWithExt.replace(/\.[^/.]+$/, ''); // убираем расширение (.mp4, .webm, .jpg...)
+        const res = await fetch(`${API_URL}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(newEdit),
+        });
 
-            videoId = publicId;
-            if (!videoId)
-                throw new Error('Не удалось извлечь publicId из ссылки');
-        } catch (err) {
-            throw new Error(
-                `Некорректная ссылка на Cloudinary. Ошибка: ${err}`
-            );
-        }
-    } else {
-        throw new Error('Неизвестный источник видео');
+        const data = await res.json();
+        if (!res.ok)
+            throw new Error(data.message || 'Ошибка при добавлении эдита');
+        return data;
     }
 
-    // Обработка тегов
-    const tagsArray = tags
-        .split(',')
-        .map((tag) => tag.trim())
-        .filter((tag) => tag);
+    // Cloudinary: отправляем FormData
+    if (source === 'cloudinary') {
+        if (!videoFile) throw new Error('Выберите видеофайл');
 
-    // Подготовка данных
-    const newEdit = {
-        title,
-        video: videoId,
-        tags: tagsArray,
-        source,
-        rating,
-    };
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('source', source);
+        formData.append('rating', rating);
+        formData.append('tags', JSON.stringify(tagsArray));
+        formData.append('videoFile', videoFile); // ключ должен совпадать с multer `.single('videoFile')`
 
-    // Отправка запроса
-    const res = await fetch(`${API_URL}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(newEdit),
-    });
+        const res = await fetch(`${API_URL}`, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                // 'Content-Type' НЕ УКАЗЫВАЕМ — browser сам установит `multipart/form-data`
+            },
+            body: formData,
+        });
 
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Ошибка при добавлении эдита');
+        const data = await res.json();
+        if (!res.ok)
+            throw new Error(data.message || 'Ошибка при загрузке видео');
 
-    return data;
+        return data;
+    }
+
+    throw new Error('Неизвестный источник видео');
 }
 
 export async function updateEdit(id, updatedData) {

@@ -5,7 +5,13 @@ import { getCloudinaryThumbnailUrl } from '../../../utils/cloudinaryUtils';
 import { getYouTubeThumbnailUrl } from '../../../utils/youtubeUtils';
 import './FavoritesSection.sass';
 
-export default function FavoritesSection({ favorites, currentUser }) {
+export default function FavoritesSection({
+    total,
+    favorites,
+    currentUser,
+    onLoadMore,
+    hasMore,
+}) {
     const [sortBy, setSortBy] = useState('date');
     const [selectedEdit, setSelectedEdit] = useState(null);
 
@@ -102,7 +108,7 @@ export default function FavoritesSection({ favorites, currentUser }) {
             </div>
 
             <div className="stats">
-                <span className="total">Всего: {favorites.length}</span>
+                <span className="total">Всего: {total}</span>
                 <div className="top-tag">
                     Топ теги:
                     <div className="tags-list">
@@ -121,10 +127,12 @@ export default function FavoritesSection({ favorites, currentUser }) {
                         onClick={() => setSelectedEdit(edit)}
                         title={edit.title}
                     >
-                        <img
-                            src={getThumbnailUrl(edit)}
-                            alt={`Превью ${edit.title}`}
-                        />
+                        <div className="image-wrapper">
+                            <img
+                                src={getThumbnailUrl(edit)}
+                                alt={`Превью ${edit.title}`}
+                            />
+                        </div>
                         <div className="info">
                             <h4>{edit.title}</h4>
                             <p>{edit.author || 'аноним'}</p>
@@ -133,6 +141,11 @@ export default function FavoritesSection({ favorites, currentUser }) {
                     </div>
                 ))}
             </div>
+            {hasMore && (
+                <button className="load-more-btn" onClick={onLoadMore}>
+                    Загрузить ещё
+                </button>
+            )}
 
             {selectedEdit && (
                 <EditModal

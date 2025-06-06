@@ -37,49 +37,57 @@ const MyEdits = () => {
 
     if (!user) {
         return (
-            <div className="my-edits">Войдите, чтобы увидеть свои эдиты</div>
+            <main className="my-edits-wrapper">
+                <Sidebar />
+                <div className="void__field"></div>
+                <div className="login-required">
+                    <p>Пожалуйста, войдите в систему, чтобы добавить эдит.</p>
+                </div>
+            </main>
         );
     }
 
     return (
         <div className="my-edits-wrapper">
             <Sidebar />
-            <div className="my-edits">
-                <button className="back-button" onClick={() => navigate(-1)}>
-                    ← Назад
-                </button>
-                <h2>Мои эдиты</h2>
+            <div className="my-edits__wrapper">
+                <div className="void__field"></div>
+                <div className="my-edits">
+                    <h2>Мои эдиты</h2>
 
-                {editsLoading ? (
-                    <Loading />
-                ) : error ? (
-                    <p className="error">{error}</p>
-                ) : edits.length === 0 ? (
-                    <p>Вы ещё не добавили ни одного эдита</p>
-                ) : (
-                    <ul>
-                        {edits.map((edit) => (
-                            <li key={edit._id} className="edit-card">
-                                <div className="info">
-                                    <h3>
-                                        Название: <span>{edit.title}</span>
-                                    </h3>
-                                    <div className="tags__wrapper">
-                                        Теги:
-                                        <p className="tags">
-                                            {edit.tags?.join(', ')}
-                                        </p>
+                    {editsLoading ? (
+                        <Loading />
+                    ) : error ? (
+                        <p className="error">{error}</p>
+                    ) : edits.length === 0 ? (
+                        <p>Вы ещё не добавили ни одного эдита</p>
+                    ) : (
+                        <ul>
+                            {edits.map((edit) => (
+                                <li key={edit._id} className="edit-card">
+                                    <div className="info">
+                                        <h3>
+                                            Название: <span>{edit.title}</span>
+                                        </h3>
+                                        <div className="tags__wrapper">
+                                            Теги:
+                                            <p className="tags">
+                                                {edit.tags?.join(', ')}
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
-                                <button
-                                    onClick={() => handleEditClick(edit._id)}
-                                >
-                                    Изменить
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
-                )}
+                                    <button
+                                        onClick={() =>
+                                            handleEditClick(edit._id)
+                                        }
+                                    >
+                                        Изменить
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
             </div>
         </div>
     );
